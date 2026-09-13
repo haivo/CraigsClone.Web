@@ -8,7 +8,7 @@ A Craigslist-style classifieds site built as a learning / portfolio project.
 |---|---|
 | Purpose | Learning / portfolio. Clarity over scale. |
 | Stack | C# / ASP.NET Core **MVC** on .NET 10 (SDK 10.0.400 installed) |
-| Database | **PostgreSQL 17** in Docker (Docker 29.7 + Compose v5.5 installed), accessed via EF Core + Npgsql |
+| Database | **PostgreSQL 16** in Docker, accessed via EF Core + Npgsql. Dev machine reuses its existing `pg-simple-agent` container on port 5433; `docker-compose.yml` is for other machines (see tasks/M0.5). |
 | Auth | **None.** Anyone can post, edit, or delete any listing. |
 | v1 scope | Listings (create / read / update / delete), categories, cities, keyword search with filters, pagination |
 | Location | `C:\Data\sources\CraigsClone` |
@@ -59,7 +59,7 @@ Query-string filters on browse/search: `q`, `min`, `max`, `sort` (`newest` | `pr
 ```
 CraigsClone/
 ├─ CraigsClone.slnx              # .NET 10 default solution format
-├─ docker-compose.yml            # postgres:17, volume, port 5432
+├─ docker-compose.yml            # postgres:16, volume, port 5433 (for machines without a Postgres)
 ├─ .env.example                  # POSTGRES_* values
 ├─ src/CraigsClone.Web/
 │  ├─ Program.cs                 # DI, EF, routing, seed on startup
@@ -141,7 +141,7 @@ dotnet run --project src/CraigsClone.Web
 dotnet test
 ```
 
-Connection string (dev): `Host=localhost;Port=5432;Database=craigsclone;Username=postgres;Password=postgres`, overridable via the `ConnectionStrings__Default` environment variable.
+Connection string (dev): `Host=localhost;Port=5433;Database=craigsclone;Username=postgres;Password=postgres`, overridable via the `ConnectionStrings__Default` environment variable.
 
 ## 8. Stretch ideas (after v1)
 
@@ -160,4 +160,4 @@ Ordered by how naturally they extend v1:
 - **No auth means anyone can edit or delete anything.** Acceptable for a learning project on localhost; do not deploy publicly as-is.
 - Keep search on `ILIKE` until data volume actually hurts; full-text search is an easy swap later because all queries live in one service.
 - `dotnet-ef` must match the EF Core major version pulled in by Npgsql; install it after adding packages and check `dotnet ef --version`.
-- No local `psql` is installed; inspect the DB with `docker compose exec db psql -U postgres craigsclone` or a GUI like DBeaver.
+- No local `psql` is installed; inspect the DB with `docker exec pg-simple-agent psql -U postgres craigsclone` (dev machine) or `docker compose exec db psql -U postgres craigsclone` (compose machines), or pgAdmin at http://localhost:5050.

@@ -20,7 +20,7 @@ Rule of thumb:
 
 Both are created in task M0.8 and grow a little in M1.
 
-**`PostgresFixture`** — starts a throwaway `postgres:17` container once per test run, applies migrations and seeds cities/categories, and gives you `CreateContext()` for a fresh `AppDbContext`. Integration tests for the service layer use it: `[Collection("postgres")]`.
+**`PostgresFixture`** — starts a throwaway `postgres:16` container (same major version as the dev database, see M0.5) once per test run, applies migrations and seeds cities/categories, and gives you `CreateContext()` for a fresh `AppDbContext`. Integration tests for the service layer use it: `[Collection("postgres")]`.
 
 **`WebAppFixture`** — starts another throwaway Postgres, then starts the real app on Kestrel with a random port pointed at that database, then launches a headless Chromium. It gives you:
 
