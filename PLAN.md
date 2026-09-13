@@ -58,7 +58,7 @@ Query-string filters on browse/search: `q`, `min`, `max`, `sort` (`newest` | `pr
 
 ```
 CraigsClone/
-├─ CraigsClone.sln
+├─ CraigsClone.slnx              # .NET 10 default solution format
 ├─ docker-compose.yml            # postgres:17, volume, port 5432
 ├─ .env.example                  # POSTGRES_* values
 ├─ src/CraigsClone.Web/
