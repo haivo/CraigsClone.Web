@@ -21,6 +21,7 @@ if (app.Environment.IsDevelopment())
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
     await db.Database.MigrateAsync();
     await DbSeeder.SeedAsync(db);
+    await DevSeeder.SeedAsync(db);   // sample ads, dev only
 }
 
 if (!app.Environment.IsDevelopment())

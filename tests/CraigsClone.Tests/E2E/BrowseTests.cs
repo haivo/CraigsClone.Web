@@ -42,6 +42,21 @@ public class BrowseTests(WebAppFixture fixture)
         finally { await page.CloseAsync(); }
     }
 
+    // M2.6: pages aren't empty out of the box. Nothing is inserted here; the app seeded samples at startup.
+    [Fact]
+    public async Task Category_HasSampleListings_WithoutInsertingAny()
+    {
+        var page = await fixture.Browser.NewPageAsync();
+        try
+        {
+            await page.GotoAsync(fixture.BaseUrl + "/austin/furniture");
+
+            await Assertions.Expect(page.Locator("li.listing-row").First).ToBeVisibleAsync();
+            await Assertions.Expect(page.GetByText("no listings yet")).Not.ToBeVisibleAsync();
+        }
+        finally { await page.CloseAsync(); }
+    }
+
     // M2.4: category page lists the ad, clicking it opens the details page.
     [Fact]
     public async Task Category_ClickListing_ShowsDetails()
