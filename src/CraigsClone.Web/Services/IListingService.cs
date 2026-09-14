@@ -9,6 +9,12 @@ public interface IListingService
     /// <summary>Listings for one city and category, filtered, sorted and paged per the filter.</summary>
     Task<PagedResult<Listing>> BrowseAsync(int cityId, int categoryId, SearchFilterVm filter, int pageSize = 20);
 
+    /// <summary>
+    /// Listings across categories (and cities), filtered, sorted and paged. Null cityId or categoryId
+    /// means "any". Rows come back with City and Category loaded, since the page shows both.
+    /// </summary>
+    Task<PagedResult<Listing>> SearchAsync(SearchFilterVm filter, int? cityId, int? categoryId, int pageSize = 20);
+
     /// <summary>One listing with its City and Category loaded, or null.</summary>
     Task<Listing?> GetAsync(int id);
 

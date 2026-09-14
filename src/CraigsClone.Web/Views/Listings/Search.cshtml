@@ -1,0 +1,24 @@
+@model SearchVm
+@{
+    ViewData["ShowPlace"] = true;   // rows come from many categories, so _ListingRow shows city and category
+}
+
+<h1>@Model.Heading</h1>
+
+<partial name="_SearchForm" model="Model.Filter" />
+
+@if (Model.Results.TotalCount == 0)
+{
+    <p class="empty">nothing found</p>
+}
+else
+{
+    <p class="count">@Model.Results.TotalCount results</p>
+    <ul class="listings">
+        @foreach (var listing in Model.Results.Items)
+        {
+            <partial name="_ListingRow" model="listing" />
+        }
+    </ul>
+    <partial name="_Pager" model="new PagerVm(Model.Results.Page, Model.Results.TotalPages, Model.Filter)" />
+}

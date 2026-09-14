@@ -15,6 +15,14 @@ public class ListingService(AppDbContext db) : IListingService
         return ToPagedAsync(Query(scoped, filter), filter.Page, pageSize);
     }
 
+    public Task<PagedResult<Listing>> SearchAsync(SearchFilterVm filter, int? cityId, int? categoryId, int pageSize = 20)
+    {
+        IQueryable<Listing> scoped = db.Listings.Include(l => l.City).Include(l => l.Category);
+        if (cityId is not null) scoped = scoped.Where(l => l.CityId == cityId);
+        if (categoryId is not null) scoped = scoped.Where(l => l.CategoryId == categoryId);
+        return ToPagedAsync(Query(scoped, filter), filter.Page, pageSize);
+    }
+
     public Task<Listing?> GetAsync(int id) =>
         db.Listings
             .Include(l => l.City)

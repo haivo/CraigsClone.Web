@@ -2,4 +2,6 @@
 
 <h1>@Model.City.Name</h1>
 
+<p class="search-all"><a href="/search?city=@Model.City.Slug">search all of @Model.City.Name</a></p>
+
 <partial name="_CategoryGroups" model="new CategoryGroupsVm(Model.Groups, Model.City.Slug)" />

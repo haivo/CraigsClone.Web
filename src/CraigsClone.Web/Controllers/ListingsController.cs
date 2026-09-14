@@ -30,6 +30,36 @@ public class ListingsController(AppDbContext db, IListingService listings) : Con
         return View(new ListingIndexVm { City = city, Category = category, Results = results, Filter = filter });
     }
 
+    // Cross-category search. ?city= and ?category= are optional; absent means "everywhere".
+    [HttpGet("search")]
+    public async Task<IActionResult> Search(SearchFilterVm filter)
+    {
+        Models.City? city = null;
+        if (filter.City is not null)
+        {
+            city = await db.Cities.FirstOrDefaultAsync(c => c.Slug == filter.City);
+            if (city is null) return NotFound();
+        }
+
+        Models.Category? category = null;
+        if (filter.Category is not null)
+        {
+            category = await db.Categories.FirstOrDefaultAsync(c => c.Slug == filter.Category);
+            if (category is null) return NotFound();
+        }
+
+        var results = await listings.SearchAsync(filter, city?.Id, category?.Id);
+
+        var vm = new SearchVm { Filter = filter, Results = results, City = city, Category = category };
+        ViewData["Title"] = vm.Heading;
+        if (city is not null)
+        {
+            ViewData["CitySlug"] = city.Slug;
+            ViewData["CityName"] = city.Name;
+        }
+        return View(vm);
+    }
+
     [HttpGet("listing/{id:int}")]
     public async Task<IActionResult> Details(int id)
     {

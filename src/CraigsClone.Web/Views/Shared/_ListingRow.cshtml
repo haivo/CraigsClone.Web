@@ -1,5 +1,6 @@
 @model Listing
 
+@* Set ViewData["ShowPlace"] = true in the parent view to add city and category (search page). *@
 <li class="listing-row">
     <span class="date">@Display.Posted(Model.CreatedAt)</span>
     <a class="title" href="/listing/@Model.Id">@Model.Title</a>
@@ -7,5 +8,9 @@
     @if (!string.IsNullOrWhiteSpace(Model.Neighborhood))
     {
         <span class="hood">(@Model.Neighborhood)</span>
+    }
+    @if (ViewData["ShowPlace"] is true)
+    {
+        <span class="place">@Model.City.Name · <a href="/@Model.City.Slug/@Model.Category.Slug">@Model.Category.Name</a></span>
     }
 </li>
