@@ -1,0 +1,26 @@
+@model PagerVm
+
+@if (Model.TotalPages > 1)
+{
+    <nav class="pager" aria-label="pages">
+        @if (Model.Page > 1)
+        {
+            <a rel="prev" href="@Model.Href(Model.Page - 1)">prev</a>
+        }
+        @foreach (var n in Model.Range())
+        {
+            if (n == Model.Page)
+            {
+                <span class="current" aria-current="page">@n</span>
+            }
+            else
+            {
+                <a href="@Model.Href(n)">@n</a>
+            }
+        }
+        @if (Model.Page < Model.TotalPages)
+        {
+            <a rel="next" href="@Model.Href(Model.Page + 1)">next</a>
+        }
+    </nav>
+}
