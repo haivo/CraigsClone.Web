@@ -1,0 +1,22 @@
+@model SearchFilterVm
+
+@* GET, so submitting only changes the query string of the current URL. No "page" field: a new search starts on page 1. *@
+<form method="get" class="search" role="search">
+    <input name="q" value="@Model.Q" placeholder="search" aria-label="search" />
+    <input name="min" type="number" step="0.01" min="0" value="@Model.Min" placeholder="min $" aria-label="min price" />
+    <input name="max" type="number" step="0.01" min="0" value="@Model.Max" placeholder="max $" aria-label="max price" />
+    <select name="sort" aria-label="sort">
+        <option value="newest" selected="@(Model.Sort == ListingSort.Newest)">newest</option>
+        <option value="priceasc" selected="@(Model.Sort == ListingSort.PriceAsc)">price: low to high</option>
+        <option value="pricedesc" selected="@(Model.Sort == ListingSort.PriceDesc)">price: high to low</option>
+    </select>
+    @if (Model.City is not null)
+    {
+        <input type="hidden" name="city" value="@Model.City" />
+    }
+    @if (Model.Category is not null)
+    {
+        <input type="hidden" name="category" value="@Model.Category" />
+    }
+    <button type="submit">search</button>
+</form>
