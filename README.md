@@ -53,6 +53,8 @@ The only setting is the connection string, `ConnectionStrings:Default`. Override
 
 To change the compose port or credentials, copy `.env.example` to `.env` and edit it.
 
+**"password authentication failed for user postgres" right after `docker compose up`?** Something else is already listening on that port, most likely a locally installed PostgreSQL service, and the app is talking to it instead of the container. Docker doesn't always complain about the clash. Check with `Get-NetTCPConnection -State Listen | Where-Object LocalPort -eq 5433` (PowerShell) or `lsof -i :5433`, then pick a free port in `.env` and in the connection string.
+
 ## Warning
 
 There are **no user accounts**. Anyone who can reach the site can edit or delete any ad. That's deliberate for a learning project on localhost. Do not deploy this as-is.
