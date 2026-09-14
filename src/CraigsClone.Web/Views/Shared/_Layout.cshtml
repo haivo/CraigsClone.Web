@@ -8,12 +8,15 @@
 </head>
 <body>
     <header>
-        <a href="/">CraigsClone</a>
+        <a class="brand" href="/">CraigsClone</a>
+        @if (ViewData["CitySlug"] is string citySlug)
+        {
+            <a class="city" href="/@citySlug">@ViewData["CityName"]</a>
+        }
+        <a class="post" href="/post">post</a>
     </header>
     <main>
         @RenderBody()
     </main>
-    <script src="~/js/site.js" asp-append-version="true"></script>
-    @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

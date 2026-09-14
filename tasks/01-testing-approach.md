@@ -57,3 +57,8 @@ powershell tests/CraigsClone.Tests/bin/Debug/net10.0/playwright.ps1 install chro
 ## When a task says "none"
 
 Some tasks (installing a tool, writing CSS, writing the README) have nothing meaningful to test at one of the three levels. The task file then says **none** and gives the reason in a few words, rather than inventing a test that proves nothing.
+
+## Browser test conventions (learned in M2.5)
+
+- After a click that navigates, assert the URL with `Assertions.Expect(page).ToHaveURLAsync(new Regex(...))`, never `page.WaitForURLAsync(...)`. The one-shot wait timed out intermittently (about one run in three) even though the navigation happened; the retrying assertion has been stable, and when it does fail it prints the actual URL instead of a bare timeout.
+- Then assert something on the new page (a heading, a piece of text) so the test proves the page rendered, not just that the address changed.

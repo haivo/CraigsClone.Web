@@ -28,6 +28,8 @@ public class HomeController(AppDbContext db) : Controller
         var categories = await db.Categories.OrderBy(c => c.Id).ToListAsync();
 
         ViewData["Title"] = city.Name;
+        ViewData["CitySlug"] = city.Slug;
+        ViewData["CityName"] = city.Name;
         return View(new CityVm { City = city, Groups = CategoryGrouping.Group(categories) });
     }
 

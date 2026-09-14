@@ -18,6 +18,8 @@ public class ListingsController(AppDbContext db, IListingService listings) : Con
         var results = await listings.BrowseAsync(city.Id, category.Id, page);
 
         ViewData["Title"] = $"{category.Name} in {city.Name}";
+        ViewData["CitySlug"] = city.Slug;
+        ViewData["CityName"] = city.Name;
         return View(new ListingIndexVm { City = city, Category = category, Results = results });
     }
 
@@ -28,6 +30,8 @@ public class ListingsController(AppDbContext db, IListingService listings) : Con
         if (listing is null) return NotFound();
 
         ViewData["Title"] = listing.Title;
+        ViewData["CitySlug"] = listing.City.Slug;
+        ViewData["CityName"] = listing.City.Name;
         return View(listing);
     }
 }

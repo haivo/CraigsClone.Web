@@ -1,31 +1,25 @@
-html {
-  font-size: 14px;
-}
-
-@media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
-}
-
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
-}
-
-html {
-  position: relative;
-  min-height: 100%;
-}
+/* Placeholder until M5.1. Just enough to be readable. */
 
 body {
-  margin-bottom: 60px;
+    margin: 0;
+    padding: 0 16px;
+    font: 15px/1.4 system-ui, -apple-system, "Segoe UI", sans-serif;
+    color: #222;
+    background: #fff;
 }
 
-.form-floating > .form-control-plaintext::placeholder, .form-floating > .form-control::placeholder {
-  color: var(--bs-secondary-color);
-  text-align: end;
+header {
+    display: flex;
+    gap: 16px;
+    padding: 8px 0;
+    border-bottom: 1px solid #ccc;
 }
 
-.form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
-  text-align: start;
+main {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 16px 0;
 }
+
+a { color: #00e; }
+a:visited { color: #551a8b; }
