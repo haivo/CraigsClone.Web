@@ -57,7 +57,9 @@ public class ListingServiceWriteTests(PostgresFixture fixture)
         Assert.Equal(form.Title, stored.Title);
         Assert.Equal(99m, stored.Price);
         Assert.True(stored.UpdatedAt > stored.CreatedAt);
-        Assert.Equal(created.CreatedAt, stored.CreatedAt);   // never touched by update
+        // Never touched by update. Postgres stores microseconds, .NET keeps 100ns ticks,
+        // so compare with a tolerance rather than exact equality.
+        Assert.Equal(created.CreatedAt, stored.CreatedAt, TimeSpan.FromMilliseconds(1));
     }
 
     [Fact]

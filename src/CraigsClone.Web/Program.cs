@@ -4,7 +4,10 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddControllersWithViews();
+// Every POST is checked for the anti-forgery token automatically. The <form method="post">
+// tag helper adds the hidden token, so the site's own forms just work.
+builder.Services.AddControllersWithViews(o =>
+    o.Filters.Add(new Microsoft.AspNetCore.Mvc.AutoValidateAntiforgeryTokenAttribute()));
 
 builder.Services.AddDbContext<AppDbContext>(o =>
     o.UseNpgsql(builder.Configuration.GetConnectionString("Default")));
