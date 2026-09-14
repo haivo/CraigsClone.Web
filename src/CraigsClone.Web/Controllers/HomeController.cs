@@ -1,6 +1,4 @@
-using System.Diagnostics;
 using CraigsClone.Web.Data;
-using CraigsClone.Web.Models;
 using CraigsClone.Web.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -31,14 +29,5 @@ public class HomeController(AppDbContext db) : Controller
         ViewData["CitySlug"] = city.Slug;
         ViewData["CityName"] = city.Name;
         return View(new CityVm { City = city, Groups = CategoryGrouping.Group(categories) });
-    }
-
-    // Kept from the template so UseExceptionHandler("/Home/Error") still has a target.
-    // M5.2 replaces this with a dedicated ErrorController.
-    [HttpGet("Home/Error")]
-    [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-    public IActionResult Error()
-    {
-        return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
     }
 }

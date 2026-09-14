@@ -29,9 +29,13 @@ if (app.Environment.IsDevelopment())
 
 if (!app.Environment.IsDevelopment())
 {
-    app.UseExceptionHandler("/Home/Error");
+    app.UseExceptionHandler("/error");   // in Development the developer exception page shows instead
     app.UseHsts();
 }
+
+// 404 (and any other empty error response) gets a real page, inside the layout, with the
+// original URL still in the address bar and the original status code preserved.
+app.UseStatusCodePagesWithReExecute("/error/{0}");
 
 app.UseHttpsRedirection();
 app.UseRouting();
