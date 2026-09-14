@@ -7,24 +7,12 @@ namespace CraigsClone.Web.Services;
 
 public class ListingService(AppDbContext db) : IListingService
 {
-    public async Task<PagedResult<Listing>> BrowseAsync(int cityId, int categoryId, int page, int pageSize = 20)
+    public const int MaxPageSize = 100;
+
+    public Task<PagedResult<Listing>> BrowseAsync(int cityId, int categoryId, SearchFilterVm filter, int pageSize = 20)
     {
-        page = Math.Max(1, page);
-
-        var query = db.Listings
-            .Where(l => l.CityId == cityId && l.CategoryId == categoryId)
-            .OrderByDescending(l => l.CreatedAt);
-
-        var total = await query.CountAsync();
-        var items = await query.Skip((page - 1) * pageSize).Take(pageSize).ToListAsync();
-
-        return new PagedResult<Listing>
-        {
-            Items = items,
-            Page = page,
-            PageSize = pageSize,
-            TotalCount = total,
-        };
+        var scoped = db.Listings.Where(l => l.CityId == cityId && l.CategoryId == categoryId);
+        return ToPagedAsync(Query(scoped, filter), filter.Page, pageSize);
     }
 
     public Task<Listing?> GetAsync(int id) =>
@@ -78,5 +66,54 @@ public class ListingService(AppDbContext db) : IListingService
         target.CategoryId = form.CategoryId!.Value;
         target.Neighborhood = string.IsNullOrWhiteSpace(form.Neighborhood) ? null : form.Neighborhood.Trim();
         target.ContactEmail = form.ContactEmail.Trim();
+    }
+
+    // ---- Query building. Static where possible so the pure parts can be unit-tested without Postgres. ----
+
+    /// <summary>Applies keyword, price range and sort from the filter. Paging is separate (ToPagedAsync).</summary>
+    public IQueryable<Listing> Query(IQueryable<Listing> source, SearchFilterVm filter)
+    {
+        var q = source;
+
+        if (!string.IsNullOrWhiteSpace(filter.Q))
+        {
+            // ILIKE = case-insensitive LIKE. Postgres only, which is why these tests need a real database.
+            var pattern = $"%{EscapeLike(filter.Q.Trim())}%";
+            q = q.Where(l => EF.Functions.ILike(l.Title, pattern, "\\")
+                          || EF.Functions.ILike(l.Description, pattern, "\\"));
+        }
+
+        // A null price fails both comparisons, so unpriced ads drop out whenever a bound is set. Intended.
+        if (filter.Min is not null) q = q.Where(l => l.Price >= filter.Min);
+        if (filter.Max is not null) q = q.Where(l => l.Price <= filter.Max);
+
+        return ApplySort(q, filter.Sort);
+    }
+
+    /// <summary>Escapes LIKE wildcards so "50%" searches for a literal percent sign.</summary>
+    public static string EscapeLike(string s) =>
+        s.Replace("\\", "\\\\").Replace("%", "\\%").Replace("_", "\\_");
+
+    /// <summary>
+    /// Sort order. Price sorts put unpriced ads last in BOTH directions: Postgres would otherwise
+    /// put NULLs first on a descending sort, so "high to low" would lead with "price not listed".
+    /// </summary>
+    public static IOrderedQueryable<Listing> ApplySort(IQueryable<Listing> q, ListingSort sort) => sort switch
+    {
+        ListingSort.PriceAsc => q.OrderBy(l => l.Price == null).ThenBy(l => l.Price).ThenByDescending(l => l.CreatedAt),
+        ListingSort.PriceDesc => q.OrderBy(l => l.Price == null).ThenByDescending(l => l.Price).ThenByDescending(l => l.CreatedAt),
+        _ => q.OrderByDescending(l => l.CreatedAt),
+    };
+
+    /// <summary>Runs the count and the page query. Page below 1 becomes 1; page size is capped.</summary>
+    public static async Task<PagedResult<T>> ToPagedAsync<T>(IQueryable<T> q, int page, int pageSize = 20)
+    {
+        page = Math.Max(1, page);
+        pageSize = Math.Clamp(pageSize, 1, MaxPageSize);
+
+        var total = await q.CountAsync();
+        var items = await q.Skip((page - 1) * pageSize).Take(pageSize).ToListAsync();
+
+        return new PagedResult<T> { Items = items, Page = page, PageSize = pageSize, TotalCount = total };
     }
 }

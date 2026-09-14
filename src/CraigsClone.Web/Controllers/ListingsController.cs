@@ -16,7 +16,7 @@ public class ListingsController(AppDbContext db, IListingService listings) : Con
         var category = await db.Categories.FirstOrDefaultAsync(c => c.Slug == categorySlug);
         if (city is null || category is null) return NotFound();
 
-        var results = await listings.BrowseAsync(city.Id, category.Id, page);
+        var results = await listings.BrowseAsync(city.Id, category.Id, new SearchFilterVm { Page = page });   // M4.5 binds the full filter
 
         ViewData["Title"] = $"{category.Name} in {city.Name}";
         ViewData["CitySlug"] = city.Slug;

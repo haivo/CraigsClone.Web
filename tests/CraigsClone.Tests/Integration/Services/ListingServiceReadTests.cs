@@ -1,6 +1,7 @@
 using CraigsClone.Web.Data;
 using CraigsClone.Web.Models;
 using CraigsClone.Web.Services;
+using CraigsClone.Web.ViewModels;
 using Microsoft.EntityFrameworkCore;
 
 namespace CraigsClone.Tests.Integration.Services;
@@ -46,7 +47,7 @@ public class ListingServiceReadTests(PostgresFixture fixture)
         await AddListings(db, city, category, 25);
         var service = new ListingService(db);
 
-        var page = await service.BrowseAsync(city.Id, category.Id, page: 1);
+        var page = await service.BrowseAsync(city.Id, category.Id, new SearchFilterVm { Page = 1 });
 
         Assert.Equal(20, page.Items.Count);
         Assert.Equal(25, page.TotalCount);
@@ -63,7 +64,7 @@ public class ListingServiceReadTests(PostgresFixture fixture)
         await AddListings(db, city, category, 25);
         var service = new ListingService(db);
 
-        var page = await service.BrowseAsync(city.Id, category.Id, page: 2);
+        var page = await service.BrowseAsync(city.Id, category.Id, new SearchFilterVm { Page = 2 });
 
         Assert.Equal(5, page.Items.Count);
         Assert.Equal("Item 21", page.Items[0].Title);
@@ -80,7 +81,7 @@ public class ListingServiceReadTests(PostgresFixture fixture)
         await AddListings(db, city, category, 3);
         var service = new ListingService(db);
 
-        var page = await service.BrowseAsync(city.Id, category.Id, badPage);
+        var page = await service.BrowseAsync(city.Id, category.Id, new SearchFilterVm { Page = badPage });
 
         Assert.Equal(1, page.Page);
         Assert.Equal(3, page.Items.Count);
@@ -94,7 +95,7 @@ public class ListingServiceReadTests(PostgresFixture fixture)
         await AddListings(db, city, category, 25);
         var service = new ListingService(db);
 
-        var page = await service.BrowseAsync(city.Id, category.Id, page: 99);
+        var page = await service.BrowseAsync(city.Id, category.Id, new SearchFilterVm { Page = 99 });
 
         Assert.Empty(page.Items);
         Assert.Equal(25, page.TotalCount);
@@ -110,7 +111,7 @@ public class ListingServiceReadTests(PostgresFixture fixture)
         await AddListings(db, city, otherCategory, 3);
         var service = new ListingService(db);
 
-        var page = await service.BrowseAsync(city.Id, category.Id, page: 1);
+        var page = await service.BrowseAsync(city.Id, category.Id, new SearchFilterVm { Page = 1 });
 
         Assert.Equal(2, page.TotalCount);
         Assert.All(page.Items, l => Assert.Equal(category.Id, l.CategoryId));
