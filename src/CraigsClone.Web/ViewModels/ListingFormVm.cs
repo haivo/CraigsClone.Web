@@ -33,4 +33,16 @@ public class ListingFormVm
     // Filled by the controller for the dropdowns. Not posted by the form.
     public IEnumerable<SelectListItem> Cities { get; set; } = [];
     public IEnumerable<SelectListItem> Categories { get; set; } = [];
+
+    /// <summary>Entity to form, for prefilling the edit page. The inverse of ListingService.Apply.</summary>
+    public static ListingFormVm From(Models.Listing listing) => new()
+    {
+        Title = listing.Title,
+        Description = listing.Description,
+        Price = listing.Price,
+        CityId = listing.CityId,
+        CategoryId = listing.CategoryId,
+        Neighborhood = listing.Neighborhood,
+        ContactEmail = listing.ContactEmail,
+    };
 }

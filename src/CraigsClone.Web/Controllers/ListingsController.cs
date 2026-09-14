@@ -66,6 +66,37 @@ public class ListingsController(AppDbContext db, IListingService listings) : Con
         return RedirectToAction(nameof(Details), new { id = listing.Id });
     }
 
+    [HttpGet("listing/{id:int}/edit")]
+    public async Task<IActionResult> Edit(int id)
+    {
+        var listing = await listings.GetAsync(id);
+        if (listing is null) return NotFound();
+
+        var form = ListingFormVm.From(listing);
+        await FillSelectListsAsync(form);
+
+        ViewData["Title"] = "edit ad";
+        ViewData["CitySlug"] = listing.City.Slug;
+        ViewData["CityName"] = listing.City.Name;
+        return View(form);
+    }
+
+    [HttpPost("listing/{id:int}/edit")]
+    public async Task<IActionResult> Edit(int id, ListingFormVm form)
+    {
+        if (!ModelState.IsValid)
+        {
+            await FillSelectListsAsync(form);
+            ViewData["Title"] = "edit ad";
+            return View(form);
+        }
+
+        if (!await listings.UpdateAsync(id, form)) return NotFound();
+
+        TempData["Success"] = "Saved.";
+        return RedirectToAction(nameof(Details), new { id });
+    }
+
     private async Task FillSelectListsAsync(ListingFormVm form)
     {
         form.Cities = await db.Cities
