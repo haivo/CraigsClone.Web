@@ -32,4 +32,51 @@ public class ListingService(AppDbContext db) : IListingService
             .Include(l => l.City)
             .Include(l => l.Category)
             .FirstOrDefaultAsync(l => l.Id == id);
+
+    // The service is the ONLY place timestamps are set, and always UtcNow: Npgsql rejects local times.
+
+    public async Task<Listing> CreateAsync(ListingFormVm form)
+    {
+        var listing = new Listing();
+        Apply(form, listing);
+        listing.CreatedAt = listing.UpdatedAt = DateTime.UtcNow;
+
+        db.Listings.Add(listing);
+        await db.SaveChangesAsync();
+        return listing;
+    }
+
+    public async Task<bool> UpdateAsync(int id, ListingFormVm form)
+    {
+        var listing = await db.Listings.FindAsync(id);
+        if (listing is null) return false;
+
+        Apply(form, listing);
+        listing.UpdatedAt = DateTime.UtcNow;
+
+        await db.SaveChangesAsync();
+        return true;
+    }
+
+    public async Task<bool> DeleteAsync(int id)
+    {
+        var listing = await db.Listings.FindAsync(id);
+        if (listing is null) return false;
+
+        db.Listings.Remove(listing);
+        await db.SaveChangesAsync();
+        return true;
+    }
+
+    /// <summary>Copies form fields onto an entity. Shared by create and update so they can't drift apart.</summary>
+    public static void Apply(ListingFormVm form, Listing target)
+    {
+        target.Title = form.Title.Trim();
+        target.Description = form.Description.Trim();
+        target.Price = form.Price;
+        target.CityId = form.CityId!.Value;          // validated [Required] before we get here
+        target.CategoryId = form.CategoryId!.Value;
+        target.Neighborhood = string.IsNullOrWhiteSpace(form.Neighborhood) ? null : form.Neighborhood.Trim();
+        target.ContactEmail = form.ContactEmail.Trim();
+    }
 }
