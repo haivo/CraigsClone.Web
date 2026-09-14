@@ -1,0 +1,5 @@
+@model CityVm
+
+<h1>@Model.City.Name</h1>
+
+<partial name="_CategoryGroups" model="new CategoryGroupsVm(Model.Groups, Model.City.Slug)" />

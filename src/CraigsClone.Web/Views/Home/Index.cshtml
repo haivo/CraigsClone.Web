@@ -1,8 +1,13 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
-}
+@model HomeVm
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+<h1>CraigsClone</h1>
+
+<p>pick a city:</p>
+<ul class="cities">
+    @foreach (var city in Model.Cities)
+    {
+        <li><a href="/@city.Slug">@city.Name</a></li>
+    }
+</ul>
+
+<partial name="_CategoryGroups" model="new CategoryGroupsVm(Model.Groups, null)" />

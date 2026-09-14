@@ -1,0 +1,25 @@
+@model CategoryGroupsVm
+
+<div class="groups">
+    @foreach (var group in Model.Groups)
+    {
+        <section class="group">
+            <h2>@CategoryGrouping.Label(group.Key)</h2>
+            <ul>
+                @foreach (var category in group)
+                {
+                    <li>
+                        @if (Model.CitySlug is null)
+                        {
+                            @category.Name
+                        }
+                        else
+                        {
+                            <a href="/@Model.CitySlug/@category.Slug">@category.Name</a>
+                        }
+                    </li>
+                }
+            </ul>
+        </section>
+    }
+</div>
