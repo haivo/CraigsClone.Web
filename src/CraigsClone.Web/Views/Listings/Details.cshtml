@@ -1,0 +1,15 @@
+@model Listing
+
+<article class="listing">
+    <h1>@Model.Title</h1>
+    <p class="meta">
+        <span class="price">@Display.Price(Model.Price)</span>
+        · posted @Display.Posted(Model.CreatedAt)
+        · <a href="/@Model.City.Slug/@Model.Category.Slug">@Model.Category.Name</a>
+        in @Model.City.Name@(string.IsNullOrWhiteSpace(Model.Neighborhood) ? "" : $" / {Model.Neighborhood}")
+    </p>
+
+    <div class="description">@Model.Description</div>
+
+    <p class="contact">contact: <a href="mailto:@Model.ContactEmail">@Model.ContactEmail</a></p>
+</article>

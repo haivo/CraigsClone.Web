@@ -1,0 +1,11 @@
+@model Listing
+
+<li class="listing-row">
+    <span class="date">@Display.Posted(Model.CreatedAt)</span>
+    <a class="title" href="/listing/@Model.Id">@Model.Title</a>
+    <span class="price">@Display.Price(Model.Price)</span>
+    @if (!string.IsNullOrWhiteSpace(Model.Neighborhood))
+    {
+        <span class="hood">(@Model.Neighborhood)</span>
+    }
+</li>

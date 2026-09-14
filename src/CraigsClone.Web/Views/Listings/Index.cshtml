@@ -1,0 +1,18 @@
+@model ListingIndexVm
+
+<h1>@Model.Category.Name in @Model.City.Name</h1>
+
+@if (Model.Results.TotalCount == 0)
+{
+    <p class="empty">no listings yet</p>
+}
+else
+{
+    <p class="count">@Model.Results.TotalCount results</p>
+    <ul class="listings">
+        @foreach (var listing in Model.Results.Items)
+        {
+            <partial name="_ListingRow" model="listing" />
+        }
+    </ul>
+}
