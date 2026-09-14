@@ -9,19 +9,25 @@ namespace CraigsClone.Web.Controllers;
 
 public class ListingsController(AppDbContext db, IListingService listings) : Controller
 {
+    // MVC fills `filter` from the query string (?q=&min=&max=&sort=&page=). A bad value
+    // (sort=banana, page=abc) leaves that property at its default; we deliberately don't
+    // check ModelState here, so a mangled URL degrades to "newest, page 1" instead of erroring.
     [HttpGet("{citySlug}/{categorySlug}")]
-    public async Task<IActionResult> Index(string citySlug, string categorySlug, int page = 1)
+    public async Task<IActionResult> Index(string citySlug, string categorySlug, SearchFilterVm filter)
     {
         var city = await db.Cities.FirstOrDefaultAsync(c => c.Slug == citySlug);
         var category = await db.Categories.FirstOrDefaultAsync(c => c.Slug == categorySlug);
         if (city is null || category is null) return NotFound();
 
-        var results = await listings.BrowseAsync(city.Id, category.Id, new SearchFilterVm { Page = page });   // M4.5 binds the full filter
+        filter.City = null;       // fixed by the URL on this page; only /search uses these
+        filter.Category = null;
+
+        var results = await listings.BrowseAsync(city.Id, category.Id, filter);
 
         ViewData["Title"] = $"{category.Name} in {city.Name}";
         ViewData["CitySlug"] = city.Slug;
         ViewData["CityName"] = city.Name;
-        return View(new ListingIndexVm { City = city, Category = category, Results = results });
+        return View(new ListingIndexVm { City = city, Category = category, Results = results, Filter = filter });
     }
 
     [HttpGet("listing/{id:int}")]

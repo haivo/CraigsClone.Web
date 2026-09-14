@@ -7,7 +7,7 @@ namespace CraigsClone.Tests.Integration.Pages;
 [Collection("app")]
 public class SearchFormTests(WebAppFixture fixture)
 {
-    [Fact(Skip = "Form renders in M4.5")]
+    [Fact]
     public async Task CategoryPage_HasGetSearchForm()
     {
         using var client = fixture.CreateClient();
@@ -20,7 +20,7 @@ public class SearchFormTests(WebAppFixture fixture)
     }
 
     // The form remembers what you searched for.
-    [Fact(Skip = "Form renders in M4.5")]
+    [Fact]
     public async Task CategoryPage_FormReflectsQueryString()
     {
         using var client = fixture.CreateClient();
@@ -35,7 +35,7 @@ public class SearchFormTests(WebAppFixture fixture)
     }
 
     // city/category hidden inputs are only for /search (M4.6); a category page's URL already fixes both.
-    [Fact(Skip = "Form renders in M4.5")]
+    [Fact]
     public async Task CategoryPage_FormHasNoHiddenCityOrCategory()
     {
         using var client = fixture.CreateClient();

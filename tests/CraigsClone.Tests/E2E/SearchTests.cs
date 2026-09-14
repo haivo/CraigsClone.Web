@@ -7,7 +7,7 @@ namespace CraigsClone.Tests.E2E;
 [Collection("app")]
 public class SearchTests(WebAppFixture fixture)
 {
-    [Fact(Skip = "Form renders in M4.5")]
+    [Fact]
     public async Task TypeKeyword_PressEnter_UrlHasQueryAndNoPage()
     {
         var page = await fixture.Browser.NewPageAsync();

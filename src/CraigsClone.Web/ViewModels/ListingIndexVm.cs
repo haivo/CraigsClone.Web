@@ -7,5 +7,8 @@ public class ListingIndexVm
     public required City City { get; init; }
     public required Category Category { get; init; }
     public required PagedResult<Listing> Results { get; init; }
-    // M4.5 adds: public required SearchFilterVm Filter { get; init; }
+    public required SearchFilterVm Filter { get; init; }
+
+    /// <summary>True when no keyword, price or sort is active, so an empty page means "no listings yet" rather than "nothing found".</summary>
+    public bool IsUnfiltered => Filter.ToRouteValues(page: 1).Count == 0;
 }

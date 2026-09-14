@@ -7,7 +7,7 @@ namespace CraigsClone.Tests.E2E;
 [Collection("app")]
 public class PagingTests(WebAppFixture fixture)
 {
-    [Fact(Skip = "Pager renders in M4.5")]
+    [Fact]
     public async Task ClickNext_ShowsSecondPage()
     {
         for (var i = 0; i < 25; i++)

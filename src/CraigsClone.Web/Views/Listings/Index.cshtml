@@ -2,9 +2,11 @@
 
 <h1>@Model.Category.Name in @Model.City.Name</h1>
 
+<partial name="_SearchForm" model="Model.Filter" />
+
 @if (Model.Results.TotalCount == 0)
 {
-    <p class="empty">no listings yet</p>
+    <p class="empty">@(Model.IsUnfiltered ? "no listings yet" : "nothing found")</p>
 }
 else
 {
@@ -15,4 +17,5 @@ else
             <partial name="_ListingRow" model="listing" />
         }
     </ul>
+    <partial name="_Pager" model="new PagerVm(Model.Results.Page, Model.Results.TotalPages, Model.Filter)" />
 }

@@ -14,7 +14,7 @@ public class PagerTests(WebAppFixture fixture)
             await TestData.AddListingAsync(services, city, category, title: $"{prefix} {i:D2}");
     }
 
-    [Fact(Skip = "Pager renders in M4.5")]
+    [Fact]
     public async Task TwentyFiveListings_ShowPageTwoAndNext()
     {
         await AddMany(fixture.Services, "denver", "lost-found", 25, "pager");
@@ -27,7 +27,7 @@ public class PagerTests(WebAppFixture fixture)
         Assert.DoesNotContain(">prev</a>", body);
     }
 
-    [Fact(Skip = "Pager renders in M4.5")]
+    [Fact]
     public async Task FiveListings_ShowNoPager()
     {
         await AddMany(fixture.Services, "denver", "volunteers", 5, "nopager");
@@ -39,7 +39,7 @@ public class PagerTests(WebAppFixture fixture)
         Assert.DoesNotContain("page=2", body);
     }
 
-    [Fact(Skip = "Pager renders in M4.5")]
+    [Fact]
     public async Task PageTwoWithKeyword_PrevLinkKeepsKeyword()
     {
         await AddMany(fixture.Services, "portland", "lost-found", 25, "keepq");

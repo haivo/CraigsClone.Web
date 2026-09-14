@@ -9,7 +9,7 @@ namespace CraigsClone.Tests.Integration.Pages;
 [Collection("app")]
 public class FilterBindingTests(WebAppFixture fixture)
 {
-    [Fact(Skip = "Filter binds in M4.5")]
+    [Fact]
     public async Task Sort_BindsCaseInsensitively()
     {
         using var client = fixture.CreateClient();
@@ -22,7 +22,7 @@ public class FilterBindingTests(WebAppFixture fixture)
     }
 
     // Decision: an invalid sort falls back to newest rather than erroring.
-    [Fact(Skip = "Filter binds in M4.5")]
+    [Fact]
     public async Task InvalidSort_FallsBackToNewest()
     {
         using var client = fixture.CreateClient();
@@ -34,7 +34,7 @@ public class FilterBindingTests(WebAppFixture fixture)
         Assert.Contains("<option value=\"newest\" selected", body);
     }
 
-    [Fact(Skip = "Filter binds in M4.5")]
+    [Fact]
     public async Task InvalidPage_IsTreatedAsPageOne()
     {
         using var client = fixture.CreateClient();
