@@ -2,6 +2,7 @@ using CraigsClone.Web.Data;
 using CraigsClone.Web.Services;
 using CraigsClone.Web.ViewModels;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 
 namespace CraigsClone.Web.Controllers;
@@ -33,5 +34,48 @@ public class ListingsController(AppDbContext db, IListingService listings) : Con
         ViewData["CitySlug"] = listing.City.Slug;
         ViewData["CityName"] = listing.City.Name;
         return View(listing);
+    }
+
+    [HttpGet("post")]
+    public async Task<IActionResult> Create(string? city)
+    {
+        var form = new ListingFormVm();
+        if (city is not null)
+        {
+            // Preselect the city the user was browsing. Unknown slug: just leave it blank.
+            form.CityId = await db.Cities.Where(c => c.Slug == city).Select(c => (int?)c.Id).FirstOrDefaultAsync();
+        }
+        await FillSelectListsAsync(form);
+
+        ViewData["Title"] = "post an ad";
+        return View(form);
+    }
+
+    [HttpPost("post")]
+    public async Task<IActionResult> Create(ListingFormVm form)
+    {
+        if (!ModelState.IsValid)
+        {
+            await FillSelectListsAsync(form);   // dropdowns aren't posted back, so refill them
+            ViewData["Title"] = "post an ad";
+            return View(form);
+        }
+
+        var listing = await listings.CreateAsync(form);
+        TempData["Success"] = "Your ad is posted.";
+        return RedirectToAction(nameof(Details), new { id = listing.Id });
+    }
+
+    private async Task FillSelectListsAsync(ListingFormVm form)
+    {
+        form.Cities = await db.Cities
+            .OrderBy(c => c.Name)
+            .Select(c => new SelectListItem(c.Name, c.Id.ToString()))
+            .ToListAsync();
+
+        var categories = await db.Categories.OrderBy(c => c.Id).ToListAsync();
+        form.Categories = categories
+            .Select(c => new SelectListItem($"{CategoryGrouping.Label(c.Group)}: {c.Name}", c.Id.ToString()))
+            .ToList();
     }
 }

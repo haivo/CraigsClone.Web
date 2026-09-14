@@ -14,7 +14,7 @@ public class AntiforgeryTests(WebAppFixture fixture)
         ["Title"] = "x", ["Description"] = "y", ["CityId"] = "1", ["CategoryId"] = "1", ["ContactEmail"] = "a@b.c",
     });
 
-    [Fact(Skip = "Route arrives in M3.4")]
+    [Fact]
     public async Task PostCreate_WithoutToken_Is400()
     {
         using var client = fixture.CreateClient();
