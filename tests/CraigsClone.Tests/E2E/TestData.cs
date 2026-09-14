@@ -42,4 +42,41 @@ public static class TestData
         await db.SaveChangesAsync();
         return listing;
     }
+
+    /// <summary>
+    /// Inserts many listings in ONE round trip. Titles are "{prefix} 01" .. "{prefix} NN"; earlier numbers are newer.
+    /// Use this instead of looping AddListingAsync: 25 separate scopes cost seconds, this costs milliseconds.
+    /// </summary>
+    public static async Task AddListingsAsync(
+        IServiceProvider services,
+        string citySlug,
+        string categorySlug,
+        int count,
+        string titlePrefix,
+        Func<int, decimal?>? price = null)
+    {
+        using var scope = services.CreateScope();
+        var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+
+        var city = await db.Cities.SingleAsync(c => c.Slug == citySlug);
+        var category = await db.Categories.SingleAsync(c => c.Slug == categorySlug);
+        var now = DateTime.UtcNow;
+
+        for (var i = 1; i <= count; i++)
+        {
+            var when = now.AddSeconds(-i);
+            db.Listings.Add(new Listing
+            {
+                Title = $"{titlePrefix} {i:D2}",
+                Description = "A test listing.",
+                Price = price is null ? 25 : price(i),
+                CityId = city.Id,
+                CategoryId = category.Id,
+                ContactEmail = "seller@example.com",
+                CreatedAt = when,
+                UpdatedAt = when,
+            });
+        }
+        await db.SaveChangesAsync();
+    }
 }

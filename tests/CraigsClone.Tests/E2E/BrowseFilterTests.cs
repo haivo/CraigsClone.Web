@@ -12,8 +12,7 @@ public class BrowseFilterTests(WebAppFixture fixture)
     public async Task FilterThenNext_KeepsEveryFilterInUrlAndForm()
     {
         // boston/volunteers is empty in DevSeeder. 25 rows priced 1..25; min=5 leaves 21 → two pages.
-        for (var i = 1; i <= 25; i++)
-            await TestData.AddListingAsync(fixture.Services, "boston", "volunteers", title: $"filterme {i:D2}", price: i);
+        await TestData.AddListingsAsync(fixture.Services, "boston", "volunteers", 25, "filterme", price: i => i);
 
         var page = await fixture.Browser.NewPageAsync();
         try

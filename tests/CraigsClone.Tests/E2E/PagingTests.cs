@@ -10,8 +10,7 @@ public class PagingTests(WebAppFixture fixture)
     [Fact]
     public async Task ClickNext_ShowsSecondPage()
     {
-        for (var i = 0; i < 25; i++)
-            await TestData.AddListingAsync(fixture.Services, "chicago", "lost-found", title: $"paging {i:D2}");
+        await TestData.AddListingsAsync(fixture.Services, "chicago", "lost-found", 25, "paging");
         var page = await fixture.Browser.NewPageAsync();
         try
         {

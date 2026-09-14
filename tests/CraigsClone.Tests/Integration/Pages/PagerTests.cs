@@ -8,11 +8,8 @@ namespace CraigsClone.Tests.Integration.Pages;
 [Collection("app")]
 public class PagerTests(WebAppFixture fixture)
 {
-    private static async Task AddMany(IServiceProvider services, string city, string category, int count, string prefix)
-    {
-        for (var i = 0; i < count; i++)
-            await TestData.AddListingAsync(services, city, category, title: $"{prefix} {i:D2}");
-    }
+    private static Task AddMany(IServiceProvider services, string city, string category, int count, string prefix) =>
+        TestData.AddListingsAsync(services, city, category, count, prefix);
 
     [Fact]
     public async Task TwentyFiveListings_ShowPageTwoAndNext()

@@ -42,11 +42,13 @@ Because the app is in the Development environment, it migrates and seeds on star
 ## Running them
 
 ```powershell
-dotnet test --filter Category=Unit          # fast, run constantly
-dotnet test --filter Category=Integration   # needs Docker running
-dotnet test --filter Category=E2E           # needs Docker + Playwright browsers
-dotnet test                                 # everything
+.\test.ps1 unit          # fast, run constantly
+.\test.ps1 integration   # needs Docker running
+.\test.ps1 e2e           # needs Docker + Playwright browsers
+.\test.ps1               # everything
 ```
+
+`test.ps1` (repo root, added in M5.4) wraps `dotnet test --filter Category=...` and first shuts down the build server, which on Windows otherwise sometimes keeps `obj/` files locked between runs.
 
 One-time Playwright browser install, after the first `dotnet build`:
 
