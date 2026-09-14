@@ -23,3 +23,6 @@ app.MapStaticAssets();
 app.MapControllers().WithStaticAssets();
 
 app.Run();
+
+// Top-level statements make Program internal. Tests need WebApplicationFactory<Program>.
+public partial class Program { }
