@@ -6,16 +6,15 @@ namespace CraigsClone.Web.Controllers;
 
 public class HomeController : Controller
 {
+    [HttpGet("")]
     public IActionResult Index()
     {
         return View();
     }
 
-    public IActionResult Privacy()
-    {
-        return View();
-    }
-
+    // Kept from the template so UseExceptionHandler("/Home/Error") still has a target.
+    // M5.2 replaces this with a dedicated ErrorController.
+    [HttpGet("Home/Error")]
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     public IActionResult Error()
     {
