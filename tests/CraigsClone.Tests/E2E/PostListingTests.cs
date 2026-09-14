@@ -33,6 +33,23 @@ public class PostListingTests(WebAppFixture fixture)
         finally { await page.CloseAsync(); }
     }
 
+    // M3.7: clicking "post" while browsing Austin opens the form with Austin already chosen.
+    [Fact]
+    public async Task PostLinkFromCityPage_PreselectsThatCity()
+    {
+        var page = await fixture.Browser.NewPageAsync();
+        try
+        {
+            await page.GotoAsync(fixture.BaseUrl + "/austin/furniture");
+            await page.Locator("header").GetByRole(AriaRole.Link, new() { Name = "post", Exact = true }).ClickAsync();
+
+            await Assertions.Expect(page).ToHaveURLAsync(new Regex(@"/post\?city=austin$"));
+            var selected = page.Locator("select[name=CityId] option:checked");
+            await Assertions.Expect(selected).ToHaveTextAsync("Austin");
+        }
+        finally { await page.CloseAsync(); }
+    }
+
     [Fact]
     public async Task SubmitWithoutTitle_ShowsError_AndKeepsWhatWasTyped()
     {
