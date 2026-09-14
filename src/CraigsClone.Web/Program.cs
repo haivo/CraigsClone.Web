@@ -10,6 +10,16 @@ builder.Services.AddDbContext<AppDbContext>(o =>
 
 var app = builder.Build();
 
+// Development only: bring the database up to date and seed it, so "docker compose up"
+// then "dotnet run" is all a fresh clone needs. Elsewhere, run migrations deliberately.
+if (app.Environment.IsDevelopment())
+{
+    using var scope = app.Services.CreateScope();
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    await db.Database.MigrateAsync();
+    await DbSeeder.SeedAsync(db);
+}
+
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");

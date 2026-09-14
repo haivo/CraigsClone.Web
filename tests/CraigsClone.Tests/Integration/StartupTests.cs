@@ -20,4 +20,25 @@ public class StartupTests(WebAppFixture fixture)
 
         Assert.True(await db.Database.CanConnectAsync());
     }
+
+    // M1.6: the fixture started the app against an EMPTY Postgres. If startup migrated
+    // and seeded, these hold. Nothing else creates tables in that database.
+    [Fact]
+    public async Task Startup_AppliedAllMigrations()
+    {
+        using var scope = fixture.Services.CreateScope();
+        var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+
+        Assert.Empty(await db.Database.GetPendingMigrationsAsync());
+    }
+
+    [Fact]
+    public async Task Startup_SeededCitiesAndCategories()
+    {
+        using var scope = fixture.Services.CreateScope();
+        var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+
+        Assert.Equal(6, await db.Cities.CountAsync());
+        Assert.Equal(22, await db.Categories.CountAsync());
+    }
 }
