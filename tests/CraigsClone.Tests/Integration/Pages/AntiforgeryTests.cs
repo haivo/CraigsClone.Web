@@ -34,7 +34,7 @@ public class AntiforgeryTests(WebAppFixture fixture)
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
     }
 
-    [Fact(Skip = "Route arrives in M3.6")]
+    [Fact]
     public async Task PostDelete_WithoutToken_Is400()
     {
         using var client = fixture.CreateClient();

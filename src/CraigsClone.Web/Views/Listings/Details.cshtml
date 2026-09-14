@@ -13,7 +13,11 @@
 
     <p class="contact">contact: <a href="mailto:@Model.ContactEmail">@Model.ContactEmail</a></p>
 
-    <p class="actions">
+    <div class="actions">
         <a href="/listing/@Model.Id/edit">edit</a>
-    </p>
+        @* asp-antiforgery is explicit: with a hand-written action attribute the tag helper doesn't add the token on its own. *@
+        <form method="post" action="/listing/@Model.Id/delete" asp-antiforgery="true" onsubmit="return confirm('Delete this ad?');">
+            <button type="submit">delete</button>
+        </form>
+    </div>
 </article>

@@ -97,6 +97,19 @@ public class ListingsController(AppDbContext db, IListingService listings) : Con
         return RedirectToAction(nameof(Details), new { id });
     }
 
+    // POST, not GET: a crawler or a browser prefetch must never be able to delete an ad.
+    [HttpPost("listing/{id:int}/delete")]
+    public async Task<IActionResult> Delete(int id)
+    {
+        var listing = await listings.GetAsync(id);   // need its city and category for the redirect
+        if (listing is null) return NotFound();
+
+        await listings.DeleteAsync(id);
+
+        TempData["Success"] = "Ad deleted.";
+        return Redirect($"/{listing.City.Slug}/{listing.Category.Slug}");
+    }
+
     private async Task FillSelectListsAsync(ListingFormVm form)
     {
         form.Cities = await db.Cities
