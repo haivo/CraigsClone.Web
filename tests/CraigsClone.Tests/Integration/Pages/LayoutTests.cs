@@ -96,5 +96,10 @@ public class LayoutTests(WebAppFixture fixture)
 
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         Assert.StartsWith("text/css", response.Content.Headers.ContentType?.MediaType);
+
+        // M5.1: a renamed or emptied file would silently leave the site unstyled.
+        var css = await response.Content.ReadAsStringAsync();
+        Assert.Contains("main", css);
+        Assert.Contains("li.listing-row", css);
     }
 }

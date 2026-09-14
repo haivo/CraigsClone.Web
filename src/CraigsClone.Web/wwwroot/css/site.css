@@ -1,25 +1,89 @@
-/* Placeholder until M5.1. Just enough to be readable. */
+/* Deliberately plain, Craigslist-flavoured. No framework, no build step. */
+
+*, *::before, *::after { box-sizing: border-box; }
 
 body {
     margin: 0;
     padding: 0 16px;
-    font: 15px/1.4 system-ui, -apple-system, "Segoe UI", sans-serif;
+    font: 15px/1.45 system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
     color: #222;
     background: #fff;
-}
-
-header {
-    display: flex;
-    gap: 16px;
-    padding: 8px 0;
-    border-bottom: 1px solid #ccc;
 }
 
 main {
     max-width: 960px;
     margin: 0 auto;
-    padding: 16px 0;
+    padding: 16px 0 48px;
 }
 
-a { color: #00e; }
+a { color: #00e; text-decoration: none; }
 a:visited { color: #551a8b; }
+a:hover { text-decoration: underline; }
+
+h1 { font-size: 1.5em; margin: 0 0 12px; }
+h2 { font-size: 1.05em; margin: 0 0 6px; color: #555; }
+
+/* header */
+header {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    align-items: baseline;
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 10px 0;
+    border-bottom: 1px solid #ccc;
+}
+header .brand { font-weight: bold; }
+header .post { margin-left: auto; }
+
+/* home + city */
+ul.cities { list-style: none; padding: 0; margin: 0 0 20px; display: flex; flex-wrap: wrap; gap: 6px 18px; }
+.search-all { margin: 0 0 16px; }
+.groups { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 20px; }
+.group ul { list-style: none; padding: 0; margin: 0; }
+.group li { line-height: 1.6; }
+
+/* listings */
+.count, .empty { color: #666; margin: 8px 0; }
+ul.listings { list-style: none; padding: 0; margin: 0; }
+li.listing-row { display: flex; flex-wrap: wrap; gap: 4px 10px; padding: 6px 0; border-bottom: 1px dotted #ddd; }
+li.listing-row .date { color: #666; min-width: 3.5em; }
+li.listing-row .title { flex: 1 1 200px; }
+li.listing-row .price { color: #060; }
+li.listing-row .hood, li.listing-row .place { color: #666; }
+
+/* details */
+article.listing .meta { color: #555; margin: 0 0 16px; }
+article.listing .price { color: #060; font-weight: bold; }
+article.listing .description { white-space: pre-wrap; max-width: 70ch; margin: 0 0 16px; }
+article.listing .actions { display: flex; gap: 12px; align-items: center; margin-top: 24px; }
+article.listing .actions form { margin: 0; }
+
+/* forms */
+form.search { display: flex; flex-wrap: wrap; gap: 6px; margin: 0 0 16px; }
+form.search input, form.search select { padding: 4px 6px; }
+form.search input[name="q"] { flex: 1 1 160px; }
+form.search input[type="number"] { width: 6em; }
+
+form.listing-form { max-width: 560px; }
+form.listing-form p { margin: 0 0 12px; }
+form.listing-form label { display: block; margin-bottom: 3px; color: #444; }
+form.listing-form input, form.listing-form textarea, form.listing-form select { width: 100%; max-width: 100%; padding: 6px; font: inherit; }
+form.listing-form input[type="number"] { width: 10em; }
+
+button { padding: 5px 12px; font: inherit; cursor: pointer; }
+.error, .errors { color: #b00; }
+.errors ul { margin: 0 0 12px; padding-left: 20px; }
+
+/* pager */
+nav.pager { display: flex; flex-wrap: wrap; gap: 10px; margin: 16px 0; }
+nav.pager .current { font-weight: bold; }
+
+/* banner (M5.3) */
+.alert { background: #ffc; border: 1px solid #ee9; padding: 8px 12px; margin: 0 0 16px; }
+
+@media (max-width: 480px) {
+    li.listing-row .date { min-width: 0; }
+    form.search input[type="number"] { width: 5em; }
+}
