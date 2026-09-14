@@ -52,6 +52,20 @@ public class LayoutTests(WebAppFixture fixture)
         Assert.Contains("class=\"city\" href=\"/denver\">Denver</a>", body);
     }
 
+    // M5.3: the banner only appears after something happened. A stray always-on box would be caught here.
+    [Theory]
+    [InlineData("/")]
+    [InlineData("/austin/furniture")]
+    [InlineData("/post")]
+    public async Task PlainGet_HasNoBanner(string url)
+    {
+        using var client = fixture.CreateClient();
+
+        var body = await client.GetStringAsync(url);
+
+        Assert.DoesNotContain("class=\"alert\"", body);
+    }
+
     // M3.7: the post link carries the current city so the form preselects it.
     [Fact]
     public async Task Home_PostLink_HasNoCity()

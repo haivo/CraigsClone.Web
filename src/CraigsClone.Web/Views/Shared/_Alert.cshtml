@@ -1,0 +1,5 @@
+@* One-shot message set with TempData["Success"] before a redirect. TempData clears it after one read. *@
+@if (TempData["Success"] is string message)
+{
+    <div class="alert" role="status">@message</div>
+}
