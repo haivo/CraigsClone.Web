@@ -1,10 +1,12 @@
+using CraigsClone.Web.Data;
+using Microsoft.EntityFrameworkCore;
 using Testcontainers.PostgreSql;
 
 namespace CraigsClone.Tests.Integration;
 
 /// <summary>
-/// Starts one throwaway Postgres 16 container for the whole test run.
-/// Grows in M1.2 (CreateContext) and M1.5 (migrate + seed).
+/// Starts one throwaway Postgres 16 container for the whole test run and creates the schema in it.
+/// M1.5 switches EnsureCreatedAsync to MigrateAsync + seeding.
 /// </summary>
 public class PostgresFixture : IAsyncLifetime
 {
@@ -12,7 +14,15 @@ public class PostgresFixture : IAsyncLifetime
 
     public string ConnectionString => _pg.GetConnectionString();
 
-    public Task InitializeAsync() => _pg.StartAsync();
+    public AppDbContext CreateContext() =>
+        new(new DbContextOptionsBuilder<AppDbContext>().UseNpgsql(ConnectionString).Options);
+
+    public async Task InitializeAsync()
+    {
+        await _pg.StartAsync();
+        await using var db = CreateContext();
+        await db.Database.EnsureCreatedAsync();
+    }
 
     public Task DisposeAsync() => _pg.DisposeAsync().AsTask();
 }
