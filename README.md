@@ -45,6 +45,8 @@ There's no `psql` needed on your machine; go through the container:
 docker compose exec db psql -U postgres craigsclone
 ```
 
+On the original dev machine (no compose), pgAdmin also runs at http://localhost:5050. If Docker restarted and the containers are stopped or gone, `.\tools\restore-db.ps1` brings Postgres and pgAdmin back.
+
 ## Configuration
 
 The only setting is the connection string, `ConnectionStrings:Default`. Override it without editing files by setting the environment variable `ConnectionStrings__Default` (two underscores).
